@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import 'semantic-ui-css/semantic.css';
 import App from './app/layout/App';
 import registerServiceWorker from './registerServiceWorker';
 
@@ -9,11 +10,11 @@ let render = () => {
     ReactDOM.render(<App />, rootEl);
 };
 
-if(module.hot) {
-    module.hot.accept('./App', () => {
-        setTimeout(render);
-    });
-}
+// if(module.hot) {
+//     module.hot.accept('./App', () => {
+//         setTimeout(render);
+//     });
+// }
 
 render();
 

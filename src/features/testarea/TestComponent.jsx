@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button } from 'semantic-ui-react';
+import GoogleMapReact from 'google-map-react';
+import { Button, Icon } from 'semantic-ui-react';
+import Script from 'react-load-script';
 import { incrementCounter, decrementCounter } from './testActions';
 
 const mapState = (state) => ({
@@ -12,14 +14,53 @@ const actions = {
   decrementCounter
 };
 
+const Marker = () => <Icon name="marker" size="big" color="red" />
+
 class TestComponent extends Component {
+  static defaultProps = {
+    center: {
+      lat: 59.95,
+      lng: 30.33
+    },
+    zoom: 11
+  };
+
+  state = {
+    address: '',
+    scriptLoaded: false
+  };
+  
+  handleScriptLoad = () => {
+    this.setState({ scriptLoaded: true });
+  };
+
+  handleChange = (address) => this.setState({ address });
+
   render() {
     const { incrementCounter, decrementCounter, data } = this.props;
     return (
       <div>
+       <Script 
+          url="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoEWaXWmKOh0cleTsxVX_pYmSx7Ikqq_o&libraries=places"
+          onLoad={this.handleScriptLoad}
+        />
         <h1>{data}</h1>
         <Button onClick={incrementCounter} color='green' content="Increment" />
         <Button onClick={decrementCounter} color='red' content="Decrement" />
+        <br/> <br/>
+        <div style={{ height: '300px', width: '100%' }}>
+          <GoogleMapReact
+            bootstrapURLKeys={{ key: 'AIzaSyDoEWaXWmKOh0cleTsxVX_pYmSx7Ikqq_o' }}
+            defaultCenter={this.props.center}
+            defaultZoom={this.props.zoom}
+          >
+            <Marker
+              lat={59.955413}
+              lng={30.337844}
+              text={'Kreyser Avrora'}
+            />
+          </GoogleMapReact>
+        </div>
       </div>
     );
   };

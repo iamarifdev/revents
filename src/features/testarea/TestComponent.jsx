@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import GoogleMapReact from 'google-map-react';
-import { Button, Icon } from 'semantic-ui-react';
+import { Button } from 'semantic-ui-react';
 import Script from 'react-load-script';
 import { incrementCounter, decrementCounter } from './testActions';
+import { openModal } from '../modals/modalActions';
 
 const mapState = (state) => ({
   data: state.test.data
@@ -11,10 +11,9 @@ const mapState = (state) => ({
 
 const actions = {
   incrementCounter,
-  decrementCounter
+  decrementCounter,
+  openModal
 };
-
-const Marker = () => <Icon name="marker" size="big" color="red" />
 
 class TestComponent extends Component {
   static defaultProps = {
@@ -37,7 +36,7 @@ class TestComponent extends Component {
   handleChange = (address) => this.setState({ address });
 
   render() {
-    const { incrementCounter, decrementCounter, data } = this.props;
+    const { incrementCounter, decrementCounter, data, openModal } = this.props;
     return (
       <div>
        <Script 
@@ -47,20 +46,8 @@ class TestComponent extends Component {
         <h1>{data}</h1>
         <Button onClick={incrementCounter} color='green' content="Increment" />
         <Button onClick={decrementCounter} color='red' content="Decrement" />
+        <Button onClick={() => openModal('TestModal', {data: 43})} color='teal' content="Open Modal" />
         <br/> <br/>
-        <div style={{ height: '300px', width: '100%' }}>
-          <GoogleMapReact
-            bootstrapURLKeys={{ key: 'AIzaSyDoEWaXWmKOh0cleTsxVX_pYmSx7Ikqq_o' }}
-            defaultCenter={this.props.center}
-            defaultZoom={this.props.zoom}
-          >
-            <Marker
-              lat={59.955413}
-              lng={30.337844}
-              text={'Kreyser Avrora'}
-            />
-          </GoogleMapReact>
-        </div>
       </div>
     );
   };

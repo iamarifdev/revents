@@ -8,7 +8,7 @@ import rootReducer from '../reducers/rootReducer';
 
 const rrfConfig = {
   userProfile: 'users',
-  attachedAuthIsReady: true,
+  attachAuthIsReady: true,
   useFirestoreForProfile: true,
   updateProfileOnLogin: false
 };

@@ -33,7 +33,7 @@ const actions = {
   setMainPhoto 
 };
 
-class PhotosPage extends Component {
+class PhotosPage extends Component {  
   state = {
     files: [],
     fileName: '',
@@ -66,7 +66,6 @@ class PhotosPage extends Component {
       toastr.error('Oops!', error.message);
     }
   };
-
 
   cancelCrop = () => {
     this.setState({ 
@@ -158,7 +157,7 @@ class PhotosPage extends Component {
             <Button positive>Main Photo</Button>
           </Card>
           {
-            photos && filteredPhotos.map((photo) => (
+            photos && filteredPhotos && filteredPhotos.map((photo) => (
               <Card key={photo.id}>
                 <Image src={photo.url} />
                 <div className='ui two buttons'>

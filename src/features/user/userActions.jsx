@@ -70,8 +70,9 @@ export const deletePhoto = (photo) =>
       await firestore.delete({
         collection: 'users',
         doc: user.uid,
-        subcollections: [{collection: 'photos', doc: photo.id}]
-      })
+        subcollections: [{collection: 'photos', doc: photo.id}],
+        storeAs: 'photos'
+      });
     } catch(error) {
       console.log(error);
       throw new Error('Problem deleting the photo');      

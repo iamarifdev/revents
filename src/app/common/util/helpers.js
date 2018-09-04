@@ -4,6 +4,7 @@ export const objectToArray = (object) => {
   if(object) {
     return Object.entries(object).map((item) => Object.assign(item[1], { id: item[0] }));
   }
+  return [];
 }
 
 export const createNewEvent = (user, photoURL, event) => {

@@ -2,6 +2,8 @@ import moment from 'moment';
 import cuid from 'cuid';
 import { toastr } from 'react-redux-toastr';
 import { asyncActionStarted, asyncActionFinished, asyncActionError } from '../async/asyncActions';
+import firebase from '../../app/config/firebase';
+import { FETCH_EVENT } from '../event/eventConstants';
 
 //import firebase, { firestore } from 'firebase';
 
@@ -139,4 +141,54 @@ export const deletePhoto = (photo) =>
         console.log(error);
         toastr.error('Oops', 'something went wrong');
       }  
+    };
+  
+  export const getUserEvents = (userUid, activeTab) => 
+    async (dispatch, getState) => {
+      dispatch(asyncActionStarted());
+      const firestore = firebase.firestore();
+      const today = new Date(Date.now());
+      let eventsRef = firestore.collection('event_attendee');
+      
+      let query;
+      switch (activeTab) {
+        case 1 : // past events
+          query = eventsRef
+            .where('userUid', '==', userUid)
+            .where('eventDate', '<=', today)
+            .orderBy('eventDate', 'desc');
+          break;
+        case 2 : // future events
+          query = eventsRef
+            .where('userUid', '==', userUid)
+            .where('eventDate', '>=', today)
+            .orderBy('eventDate');
+          break;
+        case 3 : // hosted events
+          query = eventsRef
+            .where('userUid', '==', userUid)
+            .where('host', '==', true)
+            .orderBy('eventDate', 'desc');
+          break;
+        default:
+          query = eventsRef.where('userUid', '==', userUid).orderBy('eventDate', 'desc');
+      }
+
+      try {
+        dispatch(asyncActionStarted());  
+        let querySnap = await query.get();
+        let events = [];
+
+        for (let i=0; i<querySnap.docs.length; i++) {
+          let evt = await firestore.collection('events').doc(querySnap.docs[i].data().eventId).get();
+          events.push({ ...evt.data(), id: evt.id });
+        }
+
+        dispatch({ type: FETCH_EVENT, payload: { events }});
+
+        dispatch(asyncActionFinished());        
+      } catch (error) {
+        console.log(error);
+        dispatch(asyncActionError());        
+      }
     };

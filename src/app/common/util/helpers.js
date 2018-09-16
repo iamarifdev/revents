@@ -1,8 +1,10 @@
 import moment from 'moment';
 
 export const objectToArray = (object) => {
-  if(object) {
-    return Object.entries(object).map((item) => Object.assign(item[1], { id: item[0] }));
+  if (object) {
+    return Object.entries(object).map((item) => Object.assign(item[1], {
+      id: item[0]
+    }));
   }
   return [];
 }
@@ -25,4 +27,18 @@ export const createNewEvent = (user, photoURL, event) => {
       }
     }
   };
+};
+
+export const createDataTree = dataset => {
+  let hashTable = Object.create(null);
+  dataset.forEach(a => hashTable[a.id] = { 
+    ...a,
+    childNodes: []
+  });
+  let dataTree = [];
+  dataset.forEach(a => {
+    if (a.parentId) hashTable[a.parentId].childNodes.push(hashTable[a.id]);
+    else dataTree.push(hashTable[a.id])
+  });
+  return dataTree;
 };

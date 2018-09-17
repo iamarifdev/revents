@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, Grid, Header, Image, Menu, Segment, Tab } from 'semantic-ui-react';
+import { Card, Grid, Header, Image, Segment, Tab } from 'semantic-ui-react';
 import format from 'date-fns/format';
 
 const panes = [

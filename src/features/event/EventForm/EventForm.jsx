@@ -23,7 +23,11 @@ const mapState = (state, ownProps) => {
     event = (events && events.find((item) => item.id === match.params.id)) || event;
   }
   
-  return { initialValues: event, event };
+  return { 
+    initialValues: event, 
+    event,
+    loading: state.async.loading 
+  };
 };
 
 const actions = {
@@ -90,24 +94,24 @@ class EventForm extends Component {
     .then(() => this.props.change('venue', selectedVenue));
   };
 
-  onFormSubmit = (values) => {
+  onFormSubmit = async (values) => {
     values.venueLatLng = this.state.venueLatLng;
     const { updateEvent, createEvent, history, initialValues } = this.props;
     if(initialValues.id) {
       if(Object.keys(values.venueLatLng).length === 0) {
         values.venueLatLng = this.props.event.venueLatLng;
       }
-      updateEvent(values);
+      await updateEvent(values);
       history.goBack();
     }
     else {
-      createEvent(values);
+      await createEvent(values);
       history.push('/events');
     }
   };
 
   render() {
-    const { history, handleSubmit, invalid, submitting, pristine, event, cancelToggle } = this.props;
+    const { loading, history, handleSubmit, invalid, submitting, pristine, event, cancelToggle } = this.props;
     return (
       <Grid>
         <Script 
@@ -170,10 +174,10 @@ class EventForm extends Component {
                 showTimeSelect
                 placeholder="Date and Time of an Event"
               />      
-              <Button disabled={invalid || submitting || pristine} positive type="submit">
+              <Button loading={loading} disabled={invalid || submitting || pristine} positive type="submit">
                 Submit
               </Button>
-              <Button onClick={history.goBack} type="button">Cancel</Button>
+              <Button disabled={loading} onClick={history.goBack} type="button">Cancel</Button>
               <Button 
                 type="button" 
                 color={event.cancelled ? 'green' : 'red' }
